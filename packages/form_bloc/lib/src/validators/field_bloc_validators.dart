@@ -36,7 +36,7 @@ class FieldBlocValidators {
   ///
   /// Returns [FieldBlocValidatorsErrors.required]
   /// if is not valid.
-  static String required(dynamic value) {
+  static String? required(dynamic value) {
     if (value == null ||
         value == false ||
         ((value is Iterable || value is String || value is Map) &&
@@ -53,7 +53,7 @@ class FieldBlocValidators {
   ///
   /// Returns [FieldBlocValidatorsErrors.email]
   /// if is not valid.
-  static String email(String string) {
+  static String? email(String? string) {
     final emailRegExp =
         RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$');
     if (string == null || string.isEmpty || emailRegExp.hasMatch(string)) {
@@ -70,7 +70,7 @@ class FieldBlocValidators {
   ///
   /// Returns [FieldBlocValidatorsErrors.passwordMin6Chars]
   /// if is not valid.
-  static String passwordMin6Chars(String string) {
+  static String? passwordMin6Chars(String? string) {
     if (string == null || string.isEmpty || string.runes.length >= 6) {
       return null;
     }
@@ -93,10 +93,10 @@ class FieldBlocValidators {
   ///
   ///  Returns [FieldBlocValidatorsErrors.passwordMin6Chars]
   /// if is not valid.
-  static Validator<String> confirmPassword(
+  static Validator<String?> confirmPassword(
     TextFieldBloc passwordTextFieldBloc,
   ) {
-    return (String confirmPassword) {
+    return (String? confirmPassword) {
       if (confirmPassword == null ||
           confirmPassword.isEmpty ||
           confirmPassword == passwordTextFieldBloc.value) {

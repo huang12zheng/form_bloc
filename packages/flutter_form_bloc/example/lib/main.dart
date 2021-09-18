@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
@@ -6,7 +8,7 @@ void main() {
 }
 
 class App extends StatelessWidget {
-  const App({Key key}) : super(key: key);
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,7 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
       'Option 2',
     ],
   );
+  final file = InputFieldBloc<File, String>();
 
   final date1 = InputFieldBloc<DateTime, Object>();
 
@@ -132,9 +135,8 @@ class AllFieldsForm extends StatelessWidget {
                 },
                 onFailure: (context, state) {
                   LoadingDialog.hide(context);
-
-                  Scaffold.of(context).showSnackBar(
-                      SnackBar(content: Text(state.failureResponse)));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(state.failureResponse!)));
                 },
                 child: SingleChildScrollView(
                   physics: ClampingScrollPhysics(),
@@ -175,7 +177,7 @@ class AllFieldsForm extends StatelessWidget {
                         ),
                         DateTimeFieldBlocBuilder(
                           dateTimeFieldBloc: formBloc.date1,
-                          format: DateFormat('dd-mm-yyyy'),
+                          format: DateFormat('dd-MM-yyyy'),
                           initialDate: DateTime.now(),
                           firstDate: DateTime(1900),
                           lastDate: DateTime(2100),
@@ -188,7 +190,7 @@ class AllFieldsForm extends StatelessWidget {
                         DateTimeFieldBlocBuilder(
                           dateTimeFieldBloc: formBloc.dateAndTime1,
                           canSelectTime: true,
-                          format: DateFormat('dd-mm-yyyy  hh:mm'),
+                          format: DateFormat('dd-MM-yyyy  hh:mm'),
                           initialDate: DateTime.now(),
                           firstDate: DateTime(1900),
                           lastDate: DateTime(2100),
@@ -221,6 +223,12 @@ class AllFieldsForm extends StatelessWidget {
                             child: Text('CheckboxFieldBlocBuilder'),
                           ),
                         ),
+                        BlocBuilder<InputFieldBloc<File, String>,
+                                InputFieldBlocState<File, String>>(
+                            bloc: formBloc.file,
+                            builder: (context, state) {
+                              return Container();
+                            })
                       ],
                     ),
                   ),
@@ -235,7 +243,7 @@ class AllFieldsForm extends StatelessWidget {
 }
 
 class LoadingDialog extends StatelessWidget {
-  static void show(BuildContext context, {Key key}) => showDialog<void>(
+  static void show(BuildContext context, {Key? key}) => showDialog<void>(
         context: context,
         useRootNavigator: false,
         barrierDismissible: false,
@@ -244,7 +252,7 @@ class LoadingDialog extends StatelessWidget {
 
   static void hide(BuildContext context) => Navigator.pop(context);
 
-  LoadingDialog({Key key}) : super(key: key);
+  LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -265,7 +273,7 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key key}) : super(key: key);
+  SuccessScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -282,7 +290,7 @@ class SuccessScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
-            RaisedButton.icon(
+            ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (_) => AllFieldsForm())),
               icon: Icon(Icons.replay),

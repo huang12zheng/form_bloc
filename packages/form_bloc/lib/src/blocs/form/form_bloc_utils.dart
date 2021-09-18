@@ -4,7 +4,7 @@ class FormBlocUtils {
   FormBlocUtils._();
 
   static List<SingleFieldBloc> getAllSingleFieldBlocs(
-      Iterable<FieldBloc> fieldBlocs) {
+      Iterable<FieldBloc?> fieldBlocs) {
     final singleFieldBlocs = <SingleFieldBloc>[];
     fieldBlocs.forEach(
       (fieldBloc) {
@@ -24,9 +24,9 @@ class FormBlocUtils {
     return singleFieldBlocs;
   }
 
-  static List<FieldBloc> getAllFieldBlocs(Iterable<FieldBloc> fieldBlocs) {
+  static List<FieldBloc> getAllFieldBlocs(Iterable<FieldBloc?> fieldBlocs) {
     final _fieldBlocs = <FieldBloc>[];
-    fieldBlocs?.forEach(
+    fieldBlocs.forEach(
       (fieldBloc) {
         if (fieldBloc is SingleFieldBloc) {
           _fieldBlocs.add(fieldBloc);
@@ -48,9 +48,9 @@ class FormBlocUtils {
 
   /// Returns the corresponding [FieldBloc] to the [path].
   /// if it does not exist, return `null`.
-  static FieldBloc getFieldBlocFromPath({
-    @required String path,
-    @required Map<String, FieldBloc> fieldBlocs,
+  static FieldBloc? getFieldBlocFromPath({
+    required String? path,
+    required Map<String, FieldBloc> fieldBlocs,
   }) {
     if (path == null) {
       return null;
@@ -58,14 +58,14 @@ class FormBlocUtils {
 
     var names = path.split('/');
 
-    FieldBloc currentFieldBloc;
+    FieldBloc? currentFieldBloc;
 
     for (var i = 0; i < names.length; i++) {
       final name = names[i];
       final isFirstName = i == 0;
 
       var isListIndex = name.startsWith('[') && name.endsWith(']');
-      int listIndex;
+      int? listIndex;
 
       if (isListIndex) {
         listIndex = int.tryParse(name.substring(1, name.length - 1));
@@ -91,9 +91,7 @@ class FormBlocUtils {
         if (isListIndex) {
           if (currentFieldBloc is ListFieldBloc) {
             try {
-              currentFieldBloc = (currentFieldBloc as ListFieldBloc)
-                  .state
-                  .fieldBlocs[listIndex];
+              currentFieldBloc = currentFieldBloc.state.fieldBlocs[listIndex!];
             } on RangeError {
               return null;
             }
@@ -102,8 +100,7 @@ class FormBlocUtils {
           }
         } else {
           if (currentFieldBloc is GroupFieldBloc) {
-            currentFieldBloc =
-                (currentFieldBloc as GroupFieldBloc).state._fieldBlocs[name];
+            currentFieldBloc = currentFieldBloc.state._fieldBlocs[name];
           } else {
             return null;
           }
@@ -250,7 +247,7 @@ class FormBlocUtils {
       Map<String, FieldBloc> fieldBlocs) {
     final json = <String, dynamic>{};
 
-    fieldBlocs?.forEach((name, fieldBloc) {
+    fieldBlocs.forEach((name, fieldBloc) {
       if (fieldBloc is SingleFieldBloc) {
         json[name] = fieldBloc.state;
       } else if (fieldBloc is GroupFieldBloc) {
@@ -279,12 +276,28 @@ class FormBlocUtils {
     return list;
   }
 
+  static Iterable<FieldBlocState> flattenFieldBlocsStateList(
+      Iterable<dynamic> fieldBlocStateList) {
+    final list = <FieldBlocState>[];
+
+    fieldBlocStateList.forEach((dynamic fieldBlocState) {
+      if (fieldBlocState is FieldBlocState) {
+        list.add(fieldBlocState);
+      } else if (fieldBlocState is Map<String, dynamic>) {
+        list.addAll(flattenFieldBlocsStateList(fieldBlocState.values));
+      } else if (fieldBlocState is Iterable) {
+        list.addAll(flattenFieldBlocsStateList(fieldBlocState));
+      }
+    });
+    return list;
+  }
+
   /// Returns the corresponding [FieldBlocState] of the
   /// [FieldBlocState] that is on the path.
   /// if it does not exist, return `null`.
   static dynamic getFieldBlocStateFromPath({
-    @required String path,
-    @required Map<String, dynamic> fieldBlocsStates,
+    required String? path,
+    required Map<String, dynamic> fieldBlocsStates,
   }) {
     if (path == null) {
       return null;
@@ -299,7 +312,7 @@ class FormBlocUtils {
       final isFirstName = i == 0;
 
       var isListIndex = name.startsWith('[') && name.endsWith(']');
-      int listIndex;
+      int? listIndex;
 
       if (isListIndex) {
         listIndex = int.tryParse(name.substring(1, name.length - 1));
@@ -326,8 +339,7 @@ class FormBlocUtils {
         if (isListIndex) {
           if (currentFieldBlocState is List<dynamic>) {
             try {
-              currentFieldBlocState =
-                  (currentFieldBlocState as List<dynamic>)[listIndex];
+              currentFieldBlocState = currentFieldBlocState[listIndex!];
             } on RangeError {
               return null;
             }
@@ -336,8 +348,7 @@ class FormBlocUtils {
           }
         } else {
           if (currentFieldBlocState is Map<String, dynamic>) {
-            currentFieldBlocState =
-                (currentFieldBlocState as Map<dynamic, dynamic>)[name];
+            currentFieldBlocState = currentFieldBlocState[name];
           } else {
             return null;
           }
@@ -349,8 +360,8 @@ class FormBlocUtils {
   }
 
   static dynamic getValueOfFieldBlocsStates({
-    @required String path,
-    @required Map<String, dynamic> fieldBlocsStates,
+    required String path,
+    required Map<String, dynamic> fieldBlocsStates,
   }) {
     final dynamic fieldBlocState = FormBlocUtils.getFieldBlocStateFromPath(
         path: path, fieldBlocsStates: fieldBlocsStates);
@@ -364,5 +375,57 @@ class FormBlocUtils {
     } else {
       return null;
     }
+  }
+
+  static void addFormBlocAndAutoValidateToFieldBlocs({
+    required List<FieldBloc> fieldBlocs,
+    required FormBloc? formBloc,
+    bool autoValidate = false,
+  }) {
+    final allFieldBlocs = FormBlocUtils.getAllFieldBlocs(fieldBlocs);
+
+    allFieldBlocs.forEach((e) {
+      if (e is SingleFieldBloc) {
+        e.add(AddFormBlocAndAutoValidateToFieldBloc(
+          formBloc: formBloc,
+          autoValidate: autoValidate,
+        ));
+      } else if (e is ListFieldBloc) {
+        e.add(AddFormBlocAndAutoValidateToListFieldBloc(
+          formBloc: formBloc,
+          autoValidate: autoValidate,
+        ));
+      } else if (e is GroupFieldBloc) {
+        e.add(AddFormBlocAndAutoValidateToGroupFieldBloc(
+          formBloc: formBloc,
+          autoValidate: autoValidate,
+        ));
+      }
+    });
+  }
+
+  static void removeFormBlocToFieldBlocs({
+    required List<FieldBloc> fieldBlocs,
+    required FormBloc? formBloc,
+  }) {
+    if (formBloc == null) return;
+
+    final allFieldBlocs = FormBlocUtils.getAllFieldBlocs(fieldBlocs);
+
+    allFieldBlocs.forEach((e) {
+      if (e is SingleFieldBloc) {
+        e.add(RemoveFormBlocToFieldBloc(
+          formBloc: formBloc,
+        ));
+      } else if (e is ListFieldBloc) {
+        e.add(RemoveFormBlocToListFieldBloc(
+          formBloc: formBloc,
+        ));
+      } else if (e is GroupFieldBloc) {
+        e.add(RemoveFormBlocToGroupFieldBloc(
+          formBloc: formBloc,
+        ));
+      }
+    });
   }
 }

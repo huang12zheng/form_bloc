@@ -1,3 +1,28 @@
+# 0.20.6
+-  Updated to `form_bloc: ^0.20.6`.
+# 0.20.5
+- fix Warning: Operand of null-aware operation
+# 0.20.4
+-  Updated to `form_bloc: ^0.20.4`.
+# 0.20.3
+  - fix dropdown issue 
+  -  Updated to `form_bloc: ^0.20.3`.
+# 0.20.2
+- DateTimeFieldBlocBuilder enhancement 
+  - Ability to add the text alignment.
+  - Ability to add style.
+  - Fix date time picker initial time 
+- DateTimeFieldBlocBuilder enhancement
+  - Ability to add onChanged callback
+  - Ability to add custom empty item label
+# 0.20.1
+- fix make extra-data nullable
+- fix dropdown issue
+# 0.20.0
+  * support for autofillHints in TextFieldBlocBuilder
+  ## Breaking changes
+  *  Null safety migration 
+  *  Updated to `form_bloc: ^0.20.0`.
 # 0.19.0
   ## Breaking changes
   * Updated to `form_bloc: ^0.18.0`.

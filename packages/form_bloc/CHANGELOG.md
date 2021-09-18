@@ -1,3 +1,25 @@
+# 0.20.6
+- fix InputFieldBloc ExtraData?
+- form bloc isInitial may throw error
+- version sync 
+# 0.20.5
+- fix InputFieldBloc ExtraData?
+- form bloc isInitial may throw error
+# 0.20.4
+- rollback to `meta: ^1.3.0`
+# 0.20.3
+- fix AsyncValidators issue
+#0.20.2
+- Update packages 
+- Add bool on form checking field blocs are initial
+- Fixing type error with updated suggestion function
+
+# 0.20.1
+- code improvements 
+# 0.20.0
+## Breaking changes
+* Null safety migration
+* Updated to `bloc: ^7.0.0`.
 # 0.19.1
 * Fix add `FormBloc` of items in `ListFieldBloc`.
 

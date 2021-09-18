@@ -3,7 +3,7 @@ import 'package:form_bloc_web/examples/simple_form.dart';
 import 'package:form_bloc_web/widgets/widgets.dart';
 
 class SimpleExamplePage extends StatelessWidget {
-  const SimpleExamplePage({Key key}) : super(key: key);
+  const SimpleExamplePage({Key? key}) : super(key: key);
 
   final String _formBlocName = 'LoginFormBloc';
   final String _formBlocWidgetBuildName = 'LoginForm > build';
@@ -273,14 +273,14 @@ class LoginForm extends StatelessWidget {
 ''',
         ),
         TutorialText.sub('''
-If you want to access a form bloc from the child you will use a `Builder` to get a new `context` and then you can use `context.bloc<LoginFormBloc>()` to get the form bloc.        
+If you want to access a form bloc from the child you will use a `Builder` to get a new `context` and then you can use `context.read<LoginFormBloc>()` to get the form bloc.        
 '''),
         CodeCard.main(
           nestedPath: _formBlocWidgetBuildName,
           code: '''
       child: Builder(
         builder: (context) {
-          final loginFormBloc = context.bloc<LoginFormBloc>();
+          final loginFormBloc = context.read<LoginFormBloc>();
           
           return
         },
@@ -446,6 +446,7 @@ To use them you simply have to assign a field bloc.
                   children: <Widget>[
                     TextFieldBlocBuilder(
                       textFieldBloc: loginFormBloc.email,
+                      autofillHints: [AutofillHints.username,AutofillHints.email],
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         labelText: 'Email',
@@ -454,6 +455,7 @@ To use them you simply have to assign a field bloc.
                     ),
                     TextFieldBlocBuilder(
                       textFieldBloc: loginFormBloc.password,
+                      autofillHints: [AutofillHints.password],
                       suffixButton: SuffixButton.obscureText,
                       decoration: InputDecoration(
                         labelText: 'Password',

@@ -5,17 +5,17 @@ import 'package:form_bloc_web/widgets/under_construction.dart';
 
 class ExampleScaffold extends StatelessWidget {
   const ExampleScaffold({
-    Key key,
-    @required this.title,
-    @required this.demo,
+    Key? key,
+    required this.title,
+    required this.demo,
     this.tutorial,
-    @required this.code,
+    required this.code,
   }) : super(key: key);
 
   final String title;
 
   final Widget demo;
-  final Widget tutorial;
+  final Widget? tutorial;
   final Widget code;
 
   @override
@@ -31,47 +31,40 @@ class ExampleScaffold extends StatelessWidget {
                 length: 3,
                 child: Scaffold(
                   resizeToAvoidBottomInset: true,
-                  appBar: title != null
-                      ? AppBar(
-                          automaticallyImplyLeading: false,
-                          leading: displayMobileLayout(context)
-                              ? Builder(
-                                  builder: (context) {
-                                    return IconButton(
-                                        icon: Icon(Icons.menu),
-                                        onPressed: () {
-                                          Scaffold.of(context).openDrawer();
-                                        });
-                                  },
-                                )
-                              : null,
-                          elevation: 1.0,
-                          title: Text(title),
-                          flexibleSpace: Container(
-                            decoration: BoxDecoration(
-                              gradient: mainGradient,
-                            ),
-                          ),
-                          bottom: TabBar(
-                            indicatorColor: Colors.white,
-                            indicatorWeight: 4.0,
-                            tabs: [
-                              Tab(
-                                icon: Icon(Icons.phone_android),
-                                text: 'DEMO',
-                              ),
-                              Tab(
-                                icon: Icon(Icons.library_books),
-                                text: 'TUTORIAL',
-                              ),
-                              Tab(
-                                icon: Icon(Icons.code),
-                                text: 'CODE',
-                              ),
-                            ],
-                          ),
-                        )
-                      : null,
+                  appBar: AppBar(
+                    automaticallyImplyLeading: false,
+                    leading: displayMobileLayout(context)
+                        ? Builder(
+                            builder: (context) {
+                              return IconButton(
+                                  icon: Icon(Icons.menu),
+                                  onPressed: () {
+                                    Scaffold.of(context).openDrawer();
+                                  });
+                            },
+                          )
+                        : null,
+                    elevation: 1.0,
+                    title: Text(title),
+                    bottom: TabBar(
+                      indicatorColor: Colors.white,
+                      indicatorWeight: 4.0,
+                      tabs: [
+                        Tab(
+                          icon: Icon(Icons.phone_android),
+                          text: 'DEMO',
+                        ),
+                        Tab(
+                          icon: Icon(Icons.library_books),
+                          text: 'TUTORIAL',
+                        ),
+                        Tab(
+                          icon: Icon(Icons.code),
+                          text: 'CODE',
+                        ),
+                      ],
+                    ),
+                  ),
                   drawer: displayMobileLayout(context)
                       ? const AppDrawer(permanentlyDisplay: false)
                       : null,
@@ -99,7 +92,7 @@ class ExampleScaffold extends StatelessWidget {
 
 class AppTab extends StatefulWidget {
   final Widget child;
-  const AppTab({Key key, @required this.child}) : super(key: key);
+  const AppTab({Key? key, required this.child}) : super(key: key);
 
   @override
   _AppTabState createState() => _AppTabState();
